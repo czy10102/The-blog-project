@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.czy.mapper.ITagMapper">
+    <resultMap id="tags" type="com.czy.entity.Tag">
+        <result column="one_id" property="id" />
+        <result column="one_tagName"  property="tagName" />
+        <result column="one_createTime" property="gmtCreate" />
+        <result column="one_parent"  property="parent" />
+        <collection property="tags" javaType="java.util.List" ofType="com.czy.entity.Tag">
+            <result column="two_id"  property="id" />
+            <result column="two_tagName"  property="tagName" />
+            <result column="two_createTime" property="gmtCreate" />
+            <result column="two_parent" property="parent" />
+        </collection>
+    </resultMap>
+    <select id="findAllTag" resultType="com.czy.entity.Tag" resultMap="tags">
+      SELECT
+    b.ID one_id,
+    b.GMT_CREATE one_createTime,
+    b.TAG_NAME one_tagName,
+    b.PARENT one_parent,
+    a.ID two_id,
+    a.GMT_CREATE two_createTime,
+    a.TAG_NAME two_tagName,
+    a.PARENT two_parent
+FROM
+    tag a JOIN tag b
+WHERE b.ID = a.PARENT;
+    </select>
+
+</mapper>

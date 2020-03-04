@@ -1,0 +1,227 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+    <link rel="stylesheet" href="/static/css/editcss.css"/>
+    <script src="/static/js/lib/marked.min.js" type="application/javascript"></script>
+    <script src="/static/js/lib/prettify.min.js" type="application/javascript"></script>
+    <script src="/static/js/editjs.js"></script>
+    <script src="/static/js/lib/marked.min.js"></script>
+    <script src="/static/js/lib/prettify.min.js"></script>
+    <link rel="stylesheet" href="/static/css/editormd.preview.css" />
+    <div th:insert="~{source :: source}"></div>
+    <body>
+        <div th:insert="~{nav :: nav}"></div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12" >
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+                        <h3>
+                            <span class="glyphicon" aria-hidden="true" th:text="${info.getTitle()}"> </span>
+                        </h3>
+                        作者: <span th:text="${info.getName()}"></span>| 发布时间: <span th:text="${#dates.format(info.getGmtCreate(),'yyyy-MM-dd')}"></span>
+                        阅读数: <span th:text="${info.getViewCount()}"></span>
+                        <span class="label label-info " th:each="tag : ${info.tag.split(',')}">
+                            <span class="glyphicon glyphicon-tags"></span>
+                             <span class="label label-info " th:text="${tag}"></span>
+                        </span>
+                        <hr>
+                        <!--回复类容-->
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="question-view">
+                          <textarea  style="display:none;" th:text="${info.getDescription()}"></textarea>
+                        </div>
+                        <script type="text/javascript">
+                            $(function() {
+                                editormd.markdownToHTML("question-view", {
+                                 
+                                });
+                            });
+                        </script>
+                        <hr>
+                        
+                    </div>
+                    
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+                       <h3>
+                           <span th:text="${info.getCommentCont()}"></span>
+                           <span>个回复</span>
+                       </h3>
+                        <hr>
+                        <div th:if="${not #lists.isEmpty(commnet.getList())}">
+                            <div th:each="commnetInfo : ${commnet.getList()}">
+                                <div class="media-left">
+                                    <div style="float: left">
+                                        <img class="media-object img-rounded" th:src="${info.getAvatarUrl()}" style="width: 38px;height: 38px">
+                                    </div>
+                                    <div style="float: left;margin-left: 10px">
+                                        <span th:text="${info.getName()}"></span>
+                                    </div>
+                                    <div>
+                                        <span  style="margin-left: 10px" th:text="${commnetInfo.getContent()}"></span>
+                                    </div>
+                                    <div style="float: right">
+                                        <div>
+                                            <div>
+                                                <span class="glyphicon glyphicon-thumbs-up one" th:text="${commnetInfo.getLikeCount()}" th:onclick="|javascript:like('${commnetInfo.getId()}')|"/>
+                                            </div>
+                                            <div>
+                                                <span class="glyphicon glyphicon-comment two" th:data-id="${commnetInfo.getId()}" onclick="comment(this)" th:text="${commnetInfo.getCommentContent()}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 collapse" style=" margin-left: 130px" th:id="${'commentId-'+commnetInfo.getId()}">
+                                        <input type="text" class="form-control" placeholder="回复一下" style="margin-top: 10px" th:id="${'text'+commnetInfo.getId()}">
+                                        <button type="button" class="btn btn-success" style="margin-top: 10px;float: right" th:data-id="${commnetInfo.getId()}" onclick="reply(this)">回复</button>
+                                    </div>
+                                </div>
+                                <div style="float: right">
+                                    <span th:text="${#dates.format(commnetInfo.getGmtCreate(),'yyyy-MM-dd hh:mm:ss')}"></span>
+                                </div>
+                                <hr>
+                            </div>
+                            <div th:if="${info.getCommentCont() gt 5}">
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination">
+                                        <li>
+                                            <a th:href="@{/questions/info(pageNum=${commnet.getFirstPage()},questionId=${info.getId()})}" aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+                                        <li th:each="page : ${#numbers.sequence(1,commnet.pages)}">
+                                            <a th:href="@{/questions/info(pageNum=${page},questionId=${info.getId()})}" th:text="${page}"></a>
+                                        </li>
+                                        <li>
+                                            <a th:href="@{/questions/info(pageNum=${commnet.getLastPage()},questionId=${info.getId()})}" aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                <div id = "hiddenDiv">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+                    <div class="media-left">
+                        <img class="media-object img-rounded" th:src="${info.getAvatarUrl()}" style="width: 38px;height: 38px">
+                    </div>
+                        <textarea class="form-control" rows="3" style="margin-top: 10px;width: 564px;height: 372px" id="text"></textarea>
+                    </div>
+                    <div style="width: 580px;">
+                        <button type="button" class="btn btn-success" style="float: right;margin-top: 10px" th:onclick="|javascript:ajaxDend('${info.getId()}')|">回复</button>
+                    </div>
+                </div>
+                </div>
+                <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12" >
+                    <h3>发起人</h3>
+                    <div class="media-left">
+                        <img class="media-object img-rounded" th:src="${info.getAvatarUrl()}" style="width: 38px;height: 38px">
+                        <span th:text="${info.getName()}"></span>
+                    </div>
+                    <hr>
+                    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12" >
+                        <h3>相关问题</h3>
+                        <div th:each="tag : ${tagQuestion}">
+                            <a th:href="@{/questions/info(questionId=${tag.getId()})}" th:text="${tag.title}"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script type="text/javascript" th:inline="javascript">
+        function ajaxDend(parentId) {
+            var text = $('#text').val();
+            if(!text){
+                alert("内容不能为空!")
+                return;
+            }
+            var value = {
+                parentId:parentId,
+                type:1,
+                content:text
+            };
+            $.ajax({
+                url:"/comment",
+                type:"post",
+                contentType: "application/json;charset=UTF-8",
+                dataType: "json",
+                data:JSON.stringify(value),
+                success:function (date) {
+                    $('#hiddenDiv').hide();
+                    window.location.reload();
+                }
+            })
+        }
+        function reply(commentId) {
+           var replyId = commentId.getAttribute("data-id");
+           console.log(replyId)
+            var text = $("#text"+replyId).val();
+            console.log(text)
+            var value = {
+                parentId:replyId,
+                type:2,
+                content:text
+            };
+           $.ajax({
+               type:"post",
+               url:"/comment",
+               contentType: "application/json;charset=UTF-8",
+               dataType: "json",
+               data:JSON.stringify(value),
+               success:function(data){
+                   console.log("回复完的数据" +data)
+                   comment(commentId);
+               }
+           })
+        }
+        function like(commentId) {
+            location.href="http://localhost:8080/like?commentId="+commentId;
+        }
+        function comment(e) {
+            var id = e.getAttribute("data-id");
+            var comments = $("#commentId-"+id);
+            var text = $("#text"+id);
+            var collapse = e.getAttribute("data-collapse");
+            if(collapse){
+                comments.removeClass("in");
+                e.removeAttribute("data-collapse");
+            }else{
+                $.ajax({
+                    type:"get",
+                    url:"/twoComment?commentId="+id,
+                    success:function(data){
+                        console.log(data);
+                        console.log('插入数据')
+                            $.each(data,function (commnet,value) {
+                                var div = $('<div>',{style:"margin-top:25px" });
+                                var div1 = $('<div>',{style:"float: left;"});
+                                var div2 = $('<div>',{style:"float: left;margin-left: 10px"});
+                                var div3 = $('<div>');
+                                var span = $('<span>');
+                                var span1 = $('<span>',{style:"margin-left: 10px"});
+                                var url = value.avatarUrl;
+                                var img = $('<img>',{class:"media-object img-rounded",style:"width: 38px;height: 38px",src:url});
+                                $('#addComment').append(div);
+                                div.append(div1)
+                                div2.append(span)
+                                div.append(div2);
+                                div1.append(img)
+                                div1.append(div1)
+                                div3.append(span1)
+                                div.append(div3)
+                                span1.text(value.content)
+                                span.text(value.name)
+                                comments.prepend(div);
+                            })
+                    }
+                })
+                comments.addClass("in");
+                e.setAttribute("data-collapse","in");
+            }
+        }
+    </script>
+    <style>
+        .one,.two{
+            cursor: pointer;
+        }
+    </style>
+</html>

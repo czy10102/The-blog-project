@@ -1,0 +1,5 @@
+2020-03-04 21:45:23.103 DEBUG 14300 --- [http-nio-8080-exec-8] c.c.mapper.IUserMapper.findUserByToken   : ==> Parameters: 089b9c73-747c-435f-9b4b-85624fe3124f(String)
+2020-03-04 21:45:23.107 DEBUG 14300 --- [http-nio-8080-exec-8] c.c.mapper.IUserMapper.findUserByToken   : <==      Total: 1
+2020-03-04 21:45:23.107 DEBUG 14300 --- [http-nio-8080-exec-8] c.c.m.I.findAllNotReadReceived           : ==>  Preparing: SELECT count(*) FROM NOTIFICATION WHERE RECEIVER = ? AND STATUS = 0 
+2020-03-04 21:45:23.107 DEBUG 14300 --- [http-nio-8080-exec-8] c.c.m.I.findAllNotReadReceived           : ==> Parameters: 53285317(String)
+2020-03-04 21:45:23.108 DEBUG 14300 --- [http-nio-8080-exec-8] c.c.m.I.findAllNotReadReceived           : <==      Total: 1
