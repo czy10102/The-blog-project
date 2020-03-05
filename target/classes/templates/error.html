@@ -1,0 +1,15 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>OpenSource Community</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <div th:insert="~{source :: source}"></div>
+    <body>
+            <div class="jumbotron" style="margin: 30px;background-color: white">
+                <h1>出错了!</h1>
+                <p th:text="${message}"></p>
+                <p><a class="btn btn-primary btn-lg" href="/" role="button">Learn more</a></p>
+            </div>
+    </body>
+</html>

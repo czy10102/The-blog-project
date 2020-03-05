@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>OpenSource Community</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <div th:insert="~{source :: source}"></div>
+    <body>
+        <div th:insert="~{nav :: nav}"></div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12"style="width: 30%">
+                    <h2>
+                        <span class="glyphicon" aria-hidden="true">修改问题</span>
+                    </h2>
+                    <hr>
+                    <form action="/questions/update" method="post">
+                        <div class="form-group">
+                            <label for="title">问题标题</label>
+                            <input type="text" class="form-control" id="title" name="title" placeholder="问题标题..." th:value="${question.getTitle()}">
+                        </div>
+                        <div class="form-group">
+                            <label for="title">问题补充</label>
+                            <textarea name="description" id="description" class="form-control" cols="30" rows="10" th:text="${question.getDescription()}" ></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="title">添加标签</label>
+                            <input type="text" class="form-control" id="tag" name="tag" placeholder="输入标签..." th:value="${question.getTag()}">
+                        </div>
+                        <input type="hidden" name="pageNum" th:value="${question.getPageNum()}">
+                        <input type="hidden" name="id" th:value="${question.getId()}">
+                        <button type="submit" class="btn btn-success">发布</button>
+                    </form>
+                </div>
+                <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12" >
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

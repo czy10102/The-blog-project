@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title th:text="${section}"></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <div th:insert="~{source :: source}"></div>
+    </head>
+    <body>
+        <div th:insert="~{nav :: nav}"></div>
+        <div th:if="${session.user !=null}">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12" >
+                        <div style="width: 430px;height:500px">
+                            <h2>
+                                <span class="glyphicon" aria-hidden="true" th:text="${sectionName}">  </span>
+                            </h2>
+                            <hr>
+                            <div class="media" th:each="info : ${myquestions.getList()}" style="width: 360px;height: 80px">
+                                <div class="media-left" style="float: left">
+                                    <img class="media-object img-circle" th:src="${info.getAvatarUrl()}" style="width: 38px;height: 38px">
+                                </div>
+                                <div class="media-body" style="width: 200px;float: left" >
+                                    <h4 class="media-heading" th:text="${info.getTitle()}"></h4>
+                                    <span th:text="${info.getDescription()}"></span>
+                                    <span class="text-desc">
+                                        <div>
+                                            <span th:if="${info.getViewCount()!=null}"x>
+                                                <span th:text="${info.getCommentCont()}"></span>
+                                            </span>
+                                        个回复 . <span th:if="${info.getViewCount() !=null}">
+                                                    <span th:text="${info.getViewCount()}"></span>
+                                                 </span>
+                                                <span th:unless="${info.getViewCount() !=null}">
+                                                    <span>0</span>
+                                                </span>
+                                        次浏览 . <span th:text="${#dates.format(info.getGmtCreate(),'dd MMMM yyyy')}"></span>
+                                        </div>
+                                 </span>
+                                </div>
+                                <div style="float: left">
+                                    <button type="button" id="update" th:onclick= "|javascript:updataeQuestion('${info.getId()}','${myquestions.getPageNum()}')|" class="glyphicon glyphicon-pencil btn btn-info"/>
+                                    <button type="button" id="delBtn" th:onclick= "|javascript:deleteQuestion('${info.getId()}','${myquestions.getPageNum()}')|" class="glyphicon glyphicon-remove btn btn-danger"/>
+                                </div>
+                            </div>
+                            <nav aria-label="Page navigation" th:if="${myquestions.getList().size() > 5}">
+                                <ul class="pagination">
+                                    <li>
+                                        <a th:href="@{/profile(action='questions',pageNum=${myquestions.getFirstPage()})}" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <li th:each="page : ${#numbers.sequence(1,myquestions.getPages())}">
+                                        <a th:href="@{/profile(action='questions',pageNum=${page})}" th:text="${page}" ></a>
+                                    </li>
+                                    <li>
+                                        <a th:href="@{/profile(action='questions',pageNum=${myquestions.getLastPage()})}" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12" >
+                        <div class="list-group">
+                            <a href="/profile?action=questions" th:class="${section == 'questions'} ? 'active list-group-item' : 'list-group-item'">我的问题</a>
+                            <a href="/profile?action=repies"  th:class="${section == 'repies'} ? 'active list-group-item' : 'list-group-item'">
+                                最新回复
+                                <span class="badge">14</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </body>
+    <script type="text/javascript">
+        function deleteQuestion(id,pageNum) {
+           if (confirm("是否删除?")) {
+                location.href="/questions/delete/"+id+"/"+pageNum;
+            }
+        }
+        function updataeQuestion(id,pageNum) {
+            location.href="/updateQuestion/"+id+"/"+pageNum;
+        }
+    </script>
+</html>
